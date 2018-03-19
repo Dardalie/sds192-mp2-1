@@ -1,9 +1,21 @@
 ---
 title: "Mini-Project 2"
+<<<<<<< HEAD
 author: "and Janell Lin"
 date: "October 31, 2017"
+=======
+author: "Dardalie Brooks"
+date: "March 16,2018"
+>>>>>>> 9643660ce93a703d55bc13b6b5344dd72baef9a5
 output: html_document
 ---
+
+
+```{r}
+library(tidyverse)
+library(mosaic)
+library(magrittr)
+```
 
 
 ## Loading the data
@@ -15,7 +27,14 @@ load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
+
+
+load(file = "house_elections.rda")
+load(file="candidates.rda")
+load(file="committees.rda")
+load(file="contributions.rda")
 ```
+
 
 ```{r}
 library(tidyverse)
@@ -53,4 +72,48 @@ ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
   
 ```
 
+
+  
+
+
+
+
+```{r}
+MA<-contr_incum %>%
+  filter(STATE== "MA")%>%
+  select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
+# looks @ MA data ONLY
+
+ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=F))+
+  geom_bar(stat="identity")
+
+ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=F))+
+  geom_bar(stat="identity")
+
+
+```
+
+
+
+```{r}
+types_con <- contributions %>%     
+          group_by(transaction_type) %>% 
+          summarise(N=n())
+#gives amount of unique transaction types
+
+#rapply(contributions,function(x)length(unique(x))) 
+```
+
+
+##### Transaction Type Key:
+24A -> Independent expenditure opposing election of candidate  ####AGAINST 
+24E -> Independent expenditure advocating election of candidate   #####FOR
+24F -> Communication cost for candidate (only for Form 7 filer)   #######FOR
+24N -> Communication cost against candidate (only for Form 7 filer)   ####AGAINST 
+
+
+24C -> Coordinated party expenditure
+24K-> Contribution made to nonaffiliated committe
+24R -> Election recount disbursement
+24Z -> In-kind contribution made to registered filer   #FOR   **non-monetary
 
