@@ -23,12 +23,14 @@ library(magrittr)
 This project is so interesting and relevant to my life!
 
 ```{r, include=FALSE}
+#Loads data
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
 
+#Adds file to enviornment
 load(file = "house_elections.rda")
 load(file="candidates.rda")
 load(file="committees.rda")
@@ -62,6 +64,9 @@ contr_incum <-contr  %>%
 
 
 ```
+
+
+
 
 ```{r}
 CA<-contr_incum %>%
