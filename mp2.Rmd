@@ -69,7 +69,7 @@ CA<-contr_incum %>%
   select(candidate_name, cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE, totalDonation)
   
 
-ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent, na.rm = FALSE))+
+ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
   geom_bar(stat="identity")
   
 ```
