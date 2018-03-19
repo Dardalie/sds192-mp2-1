@@ -69,19 +69,13 @@ CA<-contr_incum %>%
   select(candidate_name, cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE, totalDonation)
   
 
-<<<<<<< HEAD
 ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
-=======
-<<<<<<< HEAD
 ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
   geom_bar(stat="identity")+
   
-=======
 ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent, na.rm = FALSE))+
->>>>>>> 508e15c098012b8553455d8195450a470e051191
   geom_bar(stat="identity")
->>>>>>> 92b9aadfbd72510affe086870f85cd9e43a6b321
-  
+
 ```
 
 
@@ -92,7 +86,6 @@ MA<-contr_incum %>%
   select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
 # looks @ MA data ONLY
 
-<<<<<<< HEAD
 ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=F,ifelse(color==ge_winner,"W","N")))+
   geom_bar(stat="identity")+
   theme_minimal()
@@ -102,13 +95,11 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=F,color=ge_w
   geom_bar(stat="identity")+
   theme_minimal()
 ##### Money AGAINST candidate
-=======
 ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=T))+
   geom_bar(stat="identity")
 
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=T))+
   geom_bar(stat="identity")
->>>>>>> 92b9aadfbd72510affe086870f85cd9e43a6b321
 
 
 ```
