@@ -1,6 +1,6 @@
 ---
 title: "Mini-Project 2"
-author: "Your Name Here"
+author: "and Janell Lin"
 date: "October 31, 2017"
 output: html_document
 ---
@@ -16,3 +16,41 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 ```
+
+```{r}
+library(tidyverse)
+
+elections_1 <- house_elections %>% 
+                  select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner)
+
+names(elections_1)[names(elections_1) == 'state'] <- 'STATE'
+
+
+contr <- contributions %>% 
+                  select(state,name,transaction_amt,cand_id,transaction_type,state)%>% 
+                  filter(transaction_type%in%c("24A","24E","24N","24F")) %>% 
+                  mutate(Cand_Funding=if_else(transaction_type%in%c("24E","24F"),"FOR","AGAINST"))
+
+
+names(elections_1)[names(elections_1) == 'fec_id'] <- 'cand_id'
+
+contr_incum <-contr  %>%
+  inner_join(elections_1, by = "cand_id")%>% 
+    group_by(cand_id,Cand_Funding,candidate_name,party,cand_id,ge_winner,incumbent,STATE) %>%
+  summarise(num = n(),
+              totalDonation = sum(transaction_amt))%>%
+  spread (key=Cand_Funding, value=totalDonation)
+
+CA<-contr_incum %>%
+  filter(STATE== "CA")%>%
+  select(candidate_name, cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE, totalDonation)
+  
+```
+
+```{r}
+ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
+  geom_bar(stat="identity")
+  
+```
+
+
