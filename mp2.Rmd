@@ -73,10 +73,6 @@ ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
 ```
 
 
-  
-
-
-
 
 ```{r}
 MA<-contr_incum %>%
@@ -84,10 +80,10 @@ MA<-contr_incum %>%
   select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
 # looks @ MA data ONLY
 
-ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=F))+
+ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=T))+
   geom_bar(stat="identity")
 
-ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=F))+
+ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=T))+
   geom_bar(stat="identity")
 
 
