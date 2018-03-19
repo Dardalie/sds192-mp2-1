@@ -9,7 +9,7 @@ output: html_document
 ```{r}
 library(tidyverse)
 library(mosaic)
-#library(magrittr)
+library(magrittr)
 ```
 
 
