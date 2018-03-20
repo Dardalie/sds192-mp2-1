@@ -108,7 +108,8 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   scale_y_discrete("Contributions Against Candidates (USD)")+                             #rename y -axis
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
-  theme_minimal()
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 ```
