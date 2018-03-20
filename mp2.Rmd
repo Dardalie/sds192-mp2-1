@@ -10,6 +10,8 @@ output: html_document
 library(tidyverse)
 library(mosaic)
 library(magrittr)
+library(RColorBrewer)
+library(ggthemes)
 ```
 
 
@@ -86,20 +88,27 @@ MA<-contr_incum %>%
   select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
 # looks @ MA data ONLY
 
-ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=F,ifelse(color==ge_winner,"W","N")))+
-  geom_bar(stat="identity")+
-  theme_minimal()
 ##### Money FOR candidate
 
-ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=F,color=ge_winner))+
+ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winner,"W","N")))+
   geom_bar(stat="identity")+
   theme_minimal()
-##### Money AGAINST candidate
-ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm=T))+
-  geom_bar(stat="identity")
 
-ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent,na.rm=T))+
-  geom_bar(stat="identity")
+ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent))+
+  geom_bar(stat="identity",aes(size = ifelse(ge_winner == "W", 2, 1)))+
+  theme_minimal()
+
+##### Money AGAINST candidate
+
+
+ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
+  labs(title ="MA Candidates", 
+       subtitle="1973-1974 models",
+       caption ="Source: mtcars")+
+  scale_y_discrete("Contributions Against Candidates (USD)")+                             #rename y -axis
+  scale_x_discrete("Candidate Name")+
+  geom_bar(stat="identity")+
+  theme_minimal()
 
 
 ```
