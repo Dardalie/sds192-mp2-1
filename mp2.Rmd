@@ -89,14 +89,15 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   labs(title ="MA Candidates", 
        subtitle="Contributions Against Candidates",
        caption ="FEC")+
-  scale_y_continuous("Contributions (USD)", 
-                     limits = c(0,3000000),
-                     breaks=c(0.00,1000000,2000000, 3000000),
-                     labels= c("0","100", "200", "300"))+                     
+  scale_y_continuous("Contributions in USD (Million)", 
+                     limits = c(0,6000000),
+                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
+                     labels= c("0","1","2", "3", "4","5", "6"))+                     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a),
+        panel.grid.major = element_blank())
 
 
 ```
@@ -109,17 +110,20 @@ Function for plotting graphs of 50 states
 basic_plot <- function(STATE_arg) {
   contr_incum <- contr_incum %>%
     filter(STATE == STATE_arg)
-
+#a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
 ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
-  ggtitle(STATE_arg)+
-  scale_y_discrete("Contributions Against Candidates (USD)")+                     
+  ggtitle(STATE_arg, "Contributions Against Candidates")+
+  scale_y_continuous("Contributions in USD (Million)", 
+                     limits = c(0,6000000),
+                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
+                     labels= c("0","1","2", "3", "4","5", "6")) +                     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
 }
 
-basic_plot(STATE_arg = "MA")
+basic_plot(STATE_arg = "NY")
 
 
 ```
