@@ -37,8 +37,7 @@ load(file="contributions.rda")
 
 
 ```{r}
-library(tidyverse)
-library (ggplot2)
+
 elections_1 <- house_elections %>% 
                   select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner)
 
@@ -65,25 +64,6 @@ contr_incum <-contr  %>%
 
 
 
-
-```{r}
-CA<-contr_incum %>%
-  filter(STATE== "CA")%>%
-  select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
-  
-
-ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))
-
-ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
-  geom_bar(stat="identity")
-  
-ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent, na.rm = FALSE))+
-  geom_bar(stat="identity")
-
-```
-
-
-
 ```{r}
 MA<-contr_incum %>%
   filter(STATE== "MA")%>%
@@ -97,11 +77,8 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winne
   theme_minimal()+
   theme(axis.text=element_text(size=14,face="bold")) 
 
-
 ##### Money AGAINST candidate
-
-
-a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
+a <- ifelse(contr_incum$ge_winner=="W", "blue", "red")
 
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   geom_bar(stat="identity")+
@@ -112,7 +89,7 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,color=a))
 
 
 ```
@@ -122,21 +99,21 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
 
 Function for plotting graphs of 50 states
 ```{r}
-basic_make_plot <- function(USstate) {
+
+
+basic_make_plot <- function(STATE_arg) {
+  contr_incum <- contr_incum %>% 
+    filter(STATE == STATE_arg) 
 ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
-  ggtitle(candidate_name)+
+  ggtitle(STATE_arg)+
   scale_y_discrete("Contributions Against Candidates (USD)")+                     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-<<<<<<< HEAD
   theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
-=======
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
->>>>>>> 8cb18a6f5883da265ece501358b72b8b8862ef05
-
+basic_make_plot(STATE_arg="NY")
 
 ```
 
@@ -166,4 +143,5 @@ types_con <- contributions %>%
 24K-> Contribution made to nonaffiliated committe
 24R -> Election recount disbursement
 24Z -> In-kind contribution made to registered filer   #FOR   **non-monetary
+
 
