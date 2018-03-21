@@ -100,11 +100,9 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winne
 
 ##### Money AGAINST candidate
 
-<<<<<<< HEAD
+
 a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
 
-=======
->>>>>>> 8cb18a6f5883da265ece501358b72b8b8862ef05
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   geom_bar(stat="identity")+
   labs(title ="MA Candidates", 
