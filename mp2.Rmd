@@ -12,6 +12,7 @@ library(mosaic)
 library(magrittr)
 library(RColorBrewer)
 library(ggthemes)
+extrafont::loadfonts(device="win")
 ```
 
 
@@ -92,7 +93,8 @@ MA<-contr_incum %>%
 
 ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winner,"W","N")))+
   geom_bar(stat="identity")+
-  theme_minimal()
+  theme_minimal()+
+  theme(axis.text=element_text(size=14,face="bold")) 
 
 ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent))+
   geom_bar(stat="identity",aes(size = ifelse(ge_winner == "W", 2, 1)))+
@@ -102,6 +104,7 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent))+
 
 
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
+  geom_bar(stat="identity")+
   labs(title ="MA Candidates", 
        subtitle="1973-1974 models",
        caption ="Source: mtcars")+
@@ -112,6 +115,7 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
+#aes(family = ifelse(ge_winner=="W","Roboto Black", "Roboto Light")
 ```
 
 
