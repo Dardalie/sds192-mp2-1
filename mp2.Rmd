@@ -80,17 +80,20 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winne
 ##### Money AGAINST candidate
 a <- ifelse(contr_incum$ge_winner=="W", "blue", "red")
 
-
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   geom_bar(stat="identity")+
   labs(title ="MA Candidates", 
-       subtitle="1973-1974 models",
-       caption ="Source: mtcars")+
-  scale_y_discrete("Contributions Against Candidates (USD)")+                     
+       subtitle="Contributions Against Candidates",
+       caption ="FEC")+
+  scale_y_continuous("Contributions (USD)", 
+                     limits = c(0,3000000),
+                     breaks=c(0.00,1000000,2000000, 3000000),
+                     labels= c("0","100", "200", "300"))+                     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1,color=a))
+
 
 
 ```
@@ -101,20 +104,30 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
 Function for plotting graphs of 50 states
 ```{r}
 
+a <- ifelse(contr_incum$ge_winner=="W", "blue", "red")
 
-basic_make_plot <- function(STATE_arg) {
-  contr_incum <- contr_incum %>% 
-    filter(STATE == STATE_arg) 
-ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
-  ggtitle(STATE_arg)+
-  scale_y_discrete("Contributions Against Candidates (USD)")+                     
+basic_plot <- function(STATE_arg) {
+  contr_incum <- contr_incum %>%
+    filter(STATE == STATE_arg)
+ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=ge_winner))+
+  ggtitle(STATE_arg,"Contributions AGAINST Candidates")+
+    scale_y_continuous("Contributions (USD)", 
+                     limits = c(0,6000000),
+                     breaks=c(0.00,1000000,2000000, 3000000,4000000,5000000,6000000),
+                     labels= c("0","1","2","3","4","5","6"))+     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
-basic_make_plot(STATE_arg="NY")
+basic_plot(STATE_arg = "MA")
+
+basic_plot(STATE_arg="NY")
+
+NY<-contr_incum %>%
+  filter(STATE== "NY")%>%
+  select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
 
 ```
 
