@@ -38,7 +38,7 @@ load(file="contributions.rda")
 
 ```{r}
 library(tidyverse)
-
+library (ggplot2)
 elections_1 <- house_elections %>% 
                   select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner)
 
@@ -102,6 +102,7 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent))+
 
 ##### Money AGAINST candidate
 
+a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
 
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   geom_bar(stat="identity")+
@@ -112,7 +113,7 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
 
 
 #aes(family = ifelse(ge_winner=="W","Roboto Black", "Roboto Light")
