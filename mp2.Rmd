@@ -68,12 +68,13 @@ contr_incum <-contr  %>%
 ```{r}
 CA<-contr_incum %>%
   filter(STATE== "CA")%>%
-  select(candidate_name, cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE, totalDonation)
+  select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
   
 
+ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))
+
 ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
-ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent,na.rm = FALSE))+
-  geom_bar(stat="identity")+
+  geom_bar(stat="identity")
   
 ggplot(data=CA,aes(x=candidate_name,y=FOR, fill=incumbent, na.rm = FALSE))+
   geom_bar(stat="identity")
@@ -94,12 +95,8 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winne
   geom_bar(stat="identity")+
   theme_minimal()
 
-ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent))+
-  geom_bar(stat="identity",aes(size = ifelse(ge_winner == "W", 2, 1)))+
-  theme_minimal()
 
 ##### Money AGAINST candidate
-
 
 ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   labs(title ="MA Candidates", 
@@ -112,7 +109,27 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
+
 ```
+
+Function for plotting graphs of 50 states
+```{r}
+basic_make_plot <- function(USstate) {
+ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
+  ggtitle(candidate_name)+
+  scale_y_discrete("Contributions Against Candidates (USD)")+                     
+  scale_x_discrete("Candidate Name")+
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+}
+
+
+
+```
+
+
+
 
 
 
