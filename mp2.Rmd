@@ -37,8 +37,7 @@ load(file="contributions.rda")
 
 
 ```{r}
-library(tidyverse)
-library (ggplot2)
+
 elections_1 <- house_elections %>% 
                   select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner)
 
@@ -78,26 +77,31 @@ ggplot(data=MA,aes(x=candidate_name,y=FOR, fill=incumbent,ifelse(color==ge_winne
   theme_minimal()+
   theme(axis.text=element_text(size=14,face="bold")) 
 
-
+#table with for/against
+contr_incum_FA <-contr  %>%
+  inner_join(elections_1, by = "cand_id")%>% 
+    group_by(cand_id,Cand_Funding,candidate_name,party,cand_id,ge_winner,incumbent,STATE) %>%
+  summarise(num = n(),
+              totalDonation = sum(transaction_amt))%>%
+  filter(STATE== "MA")%>%
+  select(candidate_name,cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE,num, totalDonation)
 ##### Money AGAINST candidate
 
-
-a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
-
-ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
-  geom_bar(stat="identity")+
+ggplot(data=contr_incum_FA,aes(x=candidate_name))+
+  geom_bar(aes(y = totalDonation, fill=Cand_Funding), stat = "Identity", position="stack")+
   labs(title ="MA Candidates", 
        subtitle="Contributions Against Candidates",
-       caption ="FEC")+
+       caption ="FEC")++
+  facet_wrap(~incumbent)
   scale_y_continuous("Contributions in USD (Million)", 
                      limits = c(0,6000000),
                      breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
                      labels= c("0","1","2", "3", "4","5", "6"))+                     
   scale_x_discrete("Candidate Name")+
-  geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a),
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
         panel.grid.major = element_blank())
+
 
 
 ```
@@ -107,24 +111,40 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
 
 Function for plotting graphs of 50 states
 ```{r}
+
+a <- ifelse(contr_incum$ge_winner=="W", "blue", "red")
+
 basic_plot <- function(STATE_arg) {
-  contr_incum <- contr_incum %>%
+  contr_incum_1 <- contr_incum%>%
     filter(STATE == STATE_arg)
+  
+  a <- ifelse(contr_incum_1$ge_winner=="W", "blue", "red")
 #a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
-ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
+ggplot(data=contr_incum_1,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
   ggtitle(STATE_arg, "Contributions Against Candidates")+
   scale_y_continuous("Contributions in USD (Million)", 
                      limits = c(0,6000000),
                      breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
                      labels= c("0","1","2", "3", "4","5", "6")) +                     
+ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=ge_winner))+
+  ggtitle(STATE_arg,"Contributions AGAINST Candidates")+
+  scale_y_continuous("Contributions (USD)", 
+                     limits = c(0,6000000),
+                     breaks=c(0.00,1000000,2000000, 3000000,4000000,5000000,6000000),
+                     labels= c("0","1","2","3","4","5","6"))+     
   scale_x_discrete("Candidate Name")+
   geom_bar(stat="identity")+
   theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, color=a))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
 basic_plot(STATE_arg = "NY")
 
+basic_plot(STATE_arg="NY")
+
+NY<-contr_incum %>%
+  filter(STATE== "NY")%>%
+  select(candidate_name,cand_id,party,cand_id,ge_winner,incumbent,STATE,FOR,AGAINST,num)
 
 ```
 
@@ -154,4 +174,5 @@ types_con <- contributions %>%
 24K-> Contribution made to nonaffiliated committe
 24R -> Election recount disbursement
 24Z -> In-kind contribution made to registered filer   #FOR   **non-monetary
+
 
