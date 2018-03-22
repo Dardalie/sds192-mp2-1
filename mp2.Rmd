@@ -104,7 +104,6 @@ ggplot(data=MA,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
 Function for plotting graphs of 50 states
 ```{r}
 
-a <- ifelse(contr_incum$ge_winner=="W", "blue", "red")
 
 basic_plot <- function(STATE_arg) {
   contr_incum <- contr_incum %>%
