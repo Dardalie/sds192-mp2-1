@@ -12,7 +12,6 @@ library(mosaic)
 library(magrittr)
 library(RColorBrewer)
 library(ggthemes)
-extrafont::loadfonts(device="win")
 ```
 
 
@@ -27,12 +26,6 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
-
-#Adds file to enviornment
-load(file = "house_elections.rda")
-load(file="candidates.rda")
-load(file="committees.rda")
-load(file="contributions.rda")
 ```
 
 
@@ -85,22 +78,27 @@ contr_incum_FA <-contr  %>%
               totalDonation = sum(transaction_amt))%>%
   filter(STATE== "MA")%>%
   select(candidate_name,cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE,num, totalDonation)
-##### Money AGAINST candidate
 
-ggplot(data=contr_incum_FA,aes(x=candidate_name))+
-  geom_bar(aes(y = totalDonation, fill=Cand_Funding), stat = "Identity", position="stack")+
+
+##### Convert incumbent to factor
+contr_incum_FA$incumbent <- as.factor(contr_incum_FA$incumbent)
+
+#####
+
+ggplot(data=contr_incum_FA,aes(x=candidate_name ))+
+  geom_bar(aes( y = totalDonation,fill=Cand_Funding), stat = "Identity", position="stack")+
   labs(title ="MA Candidates", 
-       subtitle="Contributions Against Candidates",
-       caption ="FEC")++
-  facet_wrap(~incumbent)
+       caption ="FEC")+
+  facet_wrap(~as.factor(incumbent),scales="free_x")+
   scale_y_continuous("Contributions in USD (Million)", 
                      limits = c(0,6000000),
-                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
-                     labels= c("0","1","2", "3", "4","5", "6"))+                     
+                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000,6000000),
+                     labels= c("0","1","2", "3", "4","5","6"))+                     
   scale_x_discrete("Candidate Name")+
-  theme_minimal()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         panel.grid.major = element_blank())
+
+ #### cord_flip() tilts axis
 
 
 
@@ -111,22 +109,22 @@ ggplot(data=contr_incum_FA,aes(x=candidate_name))+
 
 Function for plotting graphs of 50 states
 ```{r}
+#table with for/against
+contr_incum_FA <-contr  %>%
+  inner_join(elections_1, by = "cand_id")%>% 
+    group_by(cand_id,Cand_Funding,candidate_name,party,cand_id,ge_winner,incumbent,STATE) %>%
+  summarise(num = n(),
+              totalDonation = sum(transaction_amt))%>%
+  select(candidate_name,cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE,num, totalDonation)
 
 
 basic_plot <- function(STATE_arg) {
-  contr_incum_1 <- contr_incum%>%
+  contr_incum_FA <- contr_incum_FA%>%
     filter(STATE == STATE_arg)
-  
-  a <- ifelse(contr_incum_1$ge_winner=="W", "blue", "red")
-#a <- ifelse(contr_incum$ge_winner=="W", "red", "blue")
-ggplot(data=contr_incum_1,aes(x=candidate_name,y=AGAINST, fill=incumbent))+
-  ggtitle(STATE_arg, "Contributions Against Candidates")+
-  scale_y_continuous("Contributions in USD (Million)", 
-                     limits = c(0,6000000),
-                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000, 60000000),
-                     labels= c("0","1","2", "3", "4","5", "6")) +                     
-ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=ge_winner))+
-  ggtitle(STATE_arg,"Contributions AGAINST Candidates")+
+ggplot(data=contr_incum_FA,aes(x=candidate_name,y=totalDonation, fill=Cand_Funding))+
+  geom_bar(aes( y = totalDonation,fill=Cand_Funding), stat = "Identity", position="stack")+
+  ggtitle(STATE_arg,"Contributions Candidates")+
+  facet_wrap(~as.factor(incumbent),scales="free_x")+
   scale_y_continuous("Contributions (USD)", 
                      limits = c(0,6000000),
                      breaks=c(0.00,1000000,2000000, 3000000,4000000,5000000,6000000),
@@ -137,7 +135,7 @@ ggplot(data=contr_incum,aes(x=candidate_name,y=AGAINST, fill=ge_winner))+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
-basic_plot(STATE_arg = "NY")
+basic_plot(STATE_arg = "MA")
 
 basic_plot(STATE_arg="NY")
 
@@ -174,4 +172,17 @@ types_con <- contributions %>%
 24R -> Election recount disbursement
 24Z -> In-kind contribution made to registered filer   #FOR   **non-monetary
 
+
+
+```{r}
+data("iris")
+
+plots1 <- lapply(split(iris, iris$Species), 
+  function(x) 
+    ggplot(x, aes(x=Petal.Width, y=Petal.Length)) +
+      geom_point() +
+      ggtitle(x$Species[1]))
+
+x(setosa)
+```
 
