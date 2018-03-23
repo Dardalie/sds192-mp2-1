@@ -141,6 +141,9 @@ ggplot(data=contr_incum_FA_MA,aes(x=candidate_name, y = totalDonation))+
 
 Function for plotting graphs of 50 states
 ```{r}
+incumbent_name <- list(
+  'True'="incombuent",
+  'FALSE'="NEW")
 
 #table with for/against
 contr_incum_FA <-contr  %>%
@@ -151,13 +154,14 @@ contr_incum_FA <-contr  %>%
   select(candidate_name,cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE,num, totalDonation)
 
 
+
 basic_plot <- function(STATE_arg) {
   contr_incum_FA <- contr_incum_FA%>%
     filter(STATE == STATE_arg)
   
 ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   geom_bar(aes( fill=Cand_Funding), stat = "Identity", position="stack")+
-  facet_wrap(~as.factor(incumbent), scales = "free_x")+
+  facet_wrap(~as.factor(incumbent), scales = "free_x", labeller = as_labeller(incumbent_name))+
   scale_y_continuous("Contributions in USD (Million)", 
                      limits = c(0,5000000),
                      breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000),
