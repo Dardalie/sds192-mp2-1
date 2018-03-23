@@ -168,6 +168,10 @@ low_values<-contr_incum_FA %>%
 #Table that only have winnders
 winners<-contr_incum_FA %>%
   filter(ge_winner=="W")
+
+contr_incum_FA$ge_winner <- as.factor(contr_incum_FA$ge_winner)
+
+a<- ifelse(contr_incum_FA$ge_winner=="W", "red", "blue")
     
 ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   geom_bar(aes( fill=Cand_Funding), stat = "Identity", position="stack")+
@@ -175,11 +179,11 @@ ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   scale_y_continuous("Contributions in USD (Million)", 
                      limits = c(0,5000000),
                      breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000),
-                     labels= c("0","1","2", "3", "4","5"))+                     
+                     labels= c("0","1000000","2000000", "3000000", "4000000","5000000"))+                     
   scale_x_discrete("Candidate Name")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, colour = a),
         panel.grid.major = element_blank())+
-  geom_text(data=low_values, aes(label =totalDonation, hjust = 0),position = position_dodge(width = 0.9))+
+  geom_text(data=low_values, angle = 90, aes(label =totalDonation, hjust = 0),position = position_dodge(width = 0.9))+
   geom_text(data=contr_incum_FA, aes(label = ge_winner, hjust = 1),position = position_dodge(width = 0.9), color="red")
 }
 
