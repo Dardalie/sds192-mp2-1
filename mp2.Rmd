@@ -145,6 +145,8 @@ incumbent_name <- list(
   'True'="incombuent",
   'FALSE'="NEW")
 
+
+
 #table with for/against
 contr_incum_FA <-contr  %>%
   inner_join(elections_1, by = "cand_id")%>% 
@@ -158,7 +160,15 @@ contr_incum_FA <-contr  %>%
 basic_plot <- function(STATE_arg) {
   contr_incum_FA <- contr_incum_FA%>%
     filter(STATE == STATE_arg)
-  
+
+#Table that have only the lowest donations
+low_values<-contr_incum_FA %>%
+  filter(totalDonation<20000)  
+
+#Table that only have winnders
+winners<-contr_incum_FA %>%
+  filter(ge_winner=="W")
+    
 ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   geom_bar(aes( fill=Cand_Funding), stat = "Identity", position="stack")+
   facet_wrap(~as.factor(incumbent), scales = "free_x", labeller = as_labeller(incumbent_name))+
@@ -169,8 +179,8 @@ ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   scale_x_discrete("Candidate Name")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         panel.grid.major = element_blank())+
-  geom_text(aes(label = contr_incum_FA$totalDonation, hjust = 0),position = position_dodge(width = 0.9))+
-  geom_text(aes(label = contr_incum_FA$ge_winner, hjust = 1),position = position_dodge(width = 0.9), color="red")
+  geom_text(data=low_values, aes(label =totalDonation, hjust = 0),position = position_dodge(width = 0.9))+
+  geom_text(data=contr_incum_FA, aes(label = ge_winner, hjust = 1),position = position_dodge(width = 0.9), color="red")
 }
 
 basic_plot(STATE_arg = "MA")
