@@ -12,6 +12,7 @@ library(mosaic)
 library(magrittr)
 library(RColorBrewer)
 library(ggthemes)
+library(scales)
 ```
 
 
@@ -32,7 +33,9 @@ load("contributions.rda")
 ```{r}
 
 elections_1 <- house_elections %>%
-  select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner)
+  select(fec_id,state,incumbent,candidate_name,party,primary_votes,ge_winner) %>% 
+  mutate(ge_winner =ifelse(ge_winner=="W", "W","")) %>% 
+   mutate(incumbent =ifelse(incumbent=="TRUE", "INCUMBENT","NEW CANDIDATE"))
 
 names(elections_1)[names(elections_1) == 'state'] <- 'STATE'
 
@@ -107,7 +110,7 @@ contr_incum_A <-contr  %>%
 
 
 
-Function for plotting graphs of 50 states
+DF for plotting graphs of 50 states
 ```{r}
 #table with for/against
 contr_incum_FA <-contr  %>%
@@ -117,44 +120,78 @@ contr_incum_FA <-contr  %>%
               totalDonation = sum(transaction_amt))%>%
   select(candidate_name,cand_id,Cand_Funding,party,cand_id,ge_winner,incumbent,STATE,num, totalDonation)
 
-# 
-test <- contr_incum_FA %>%
-  mutate(ge_winner =ifelse(ge_winner=="N", "L",""))
+```
 
+
+
+Function for plotting graphs of 50 states
+
+```{r}
 basic_plot <- function(STATE_arg) {
   contr_incum_FA <- contr_incum_FA%>%
     filter(STATE == STATE_arg)
 
 #Table that have only the lowest donations
+  
 low_values<-contr_incum_FA %>%
-  filter(totalDonation<20000)  
+  filter(totalDonation<20000)
 
-#Table that only have winnders
 winners<-contr_incum_FA %>%
   filter(ge_winner=="W")
 
-<<<<<<< HEAD
-contr_incum_FA$ge_winner <- as.factor(contr_incum_FA$ge_winner)
-
-a<- ifelse(contr_incum_FA$ge_winner=="W", "red", "blue")
-    
-=======
->>>>>>> b737829497c100a43c578cef344ecde83871bdec
-ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
+plot<- ggplot(data=contr_incum_FA,aes(x=candidate_name, y = totalDonation))+
   geom_bar(aes( fill=Cand_Funding), stat = "Identity", position="stack")+
-  facet_wrap(~as.factor(incumbent), scales = "free_x")+
+  ggtitle("Candidate Funding")+
+  scale_x_discrete("Candidate Name",
+                   expand = c(0,0))+
+  scale_fill_manual(name="Funding Type", values=c("#814812", "#80e5ff"))+
+  facet_wrap(~as.factor(incumbent), scales = "free_x",nrow=2)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        panel.grid.minor = element_blank(),
+        strip.background=element_rect(fill="beige"))+
   scale_y_continuous("Contributions in USD", 
-                     limits = c(0,5000000),
-                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000),
-                     labels= c("0","1000000","2000000", "3000000", "4000000","5000000"))+                     
-  scale_x_discrete("Candidate Name")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, colour = a),
-        panel.grid.major = element_blank())+
-  geom_text(data=low_values, angle = 90, aes(label =totalDonation, hjust = 0),position = position_dodge(width = 0.9))+
-  geom_text(data=contr_incum_FA, aes(label = ge_winner, hjust = 1),position = position_dodge(width = 0.9), color="red")
+                     expand = c(0, 0),
+                     limits = c(0,6000000),
+                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000,6000000),
+                     labels= c("0","1000000","2000000", "3000000", "4000000","5000000","6000000"))+
+    geom_text(data=low_values, aes(label =totalDonation, hjust = 0, color = Cand_Funding), angle=90,position = position_dodge(width = 0.9))+
+  geom_text(data=contr_incum_FA, aes(label = ge_winner, vjust = -5),position = position_dodge(width = 0.9), color="red",size=4)+
+  labs(caption = "H. Wickham. ggplot2: Elegant Graphics for Data Analysis Springer-Verlag New York, 2009.")
 }
 
-basic_plot(STATE_arg = "MA")
+#plot+geom_point(aes( fill=Cand_Funding), stat = "Identity", position="stack")
+  
+
+
+basic_plot(STATE_arg = "NY")
+```
+
+
+WORD COUNT
+###### to get word count output, run following
+
+
+
+
+
+
+![`Github Repository`](https://github.com/Dardalie/sds192-mp2-1) 
+
+```{r}
+#wordcountaddin:::text_stats_fn_(text)
+```
+
+
+
+```
+ scale_x_discrete("Candidate Name")+
+  scale_y_continuous("Contributions in USD", 
+                    limits = c(0,5000000),
+                     breaks=c(0.00,1000000, 2000000,3000000, 4000000, 5000000),
+                     labels= c("0","1000000","2000000", "3000000","4000000","5000000"))+
+  scale_fill_manual("FUnding Purpose", values=c("#814812","#2A8DBC"))+
+
+
 
 
  #If you want the heights of the bars to represent values in the data, use stat="identity" and map a value to the y aesthetic
